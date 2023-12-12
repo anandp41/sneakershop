@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sneaker_shop/db/dbhelper.dart';
 import 'package:sneaker_shop/main.dart';
 import 'package:sneaker_shop/providers/sneakershopprovider.dart';
+import 'package:sneaker_shop/screens/user/privpolicy.dart';
 import 'package:sneaker_shop/screens/user/screen_signup.dart';
 import 'package:sneaker_shop/support/colors.dart';
 import 'package:sneaker_shop/support/constants.dart';
@@ -228,6 +229,28 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
                               'Admin Login',
                               style: TextStyle(
                                   color: Colors.grey[100], fontSize: 18),
+                            )),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ScreenPrivacyPolicy(),
+                                  ));
+                            },
+                            child: Text(
+                              'Privacy Policy',
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  decorationStyle: TextDecorationStyle.solid,
+                                  decorationColor: Colors.white,
+                                  decorationThickness: 2,
+                                  color: Colors.grey[100],
+                                  fontSize: 18),
                             ))
                       ],
                     ),
