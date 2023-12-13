@@ -6,6 +6,7 @@ The following dependencies were used in this project:
 
 dependencies:
   bottom_nav_layout: ^3.0.10
+  
   carousel_slider: ^4.2.1
   cupertino_icons: ^1.0.2
   file_picker: ^6.1.1
