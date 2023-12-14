@@ -1,6 +1,7 @@
 # sneaker_shop
 
 An offline app emulating an online sneaker shopping experience.The app stores the data collected from the user in the users device and does NOT send the data anywhere. The app does NOT have access to internet.
+This app has also been hosted on Firebase (link: https://sneakershopdemo.web.app )
 
 The following dependencies were used in this project:
 
