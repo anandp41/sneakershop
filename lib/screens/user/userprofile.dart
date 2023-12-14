@@ -153,7 +153,7 @@ class ScreenUserProfile extends StatelessWidget {
                                         // fit: BoxFit.scaleDown,
                                       ) as ImageProvider
                                     : const AssetImage('assets/images/def.png'),
-                            radius: MediaQuery.of(context).size.width / 8,
+                            radius: 80,
                           ),
                         ),
                       ),

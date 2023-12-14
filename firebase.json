@@ -1,0 +1,15 @@
+{
+  "hosting": {
+    "site": "sneakershopdemo",
+    "target": "Sneaker Shop",
+    "source": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "frameworksBackend": {
+      "region": "us-central1"
+    }
+  }
+}

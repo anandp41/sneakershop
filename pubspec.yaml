@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  firebase_core: ^2.24.2
   bottom_nav_layout: ^3.0.10
   carousel_slider: ^4.2.1
   cupertino_icons: ^1.0.2
@@ -88,7 +89,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
+    - assets/images/
     - assets/privacypolicy.md
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.devn/assets-and-images/#resolution-aware

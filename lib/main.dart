@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,11 +34,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  // Hive.deleteBoxFromDisk('revenuebox');
-  // debugPrint('cleared once');
-  final appDocumentsDirectory = await getApplicationDocumentsDirectory();
-  dynamic imagefolder = '${appDocumentsDirectory.path}/images';
-  final newDirectory = Directory(imagefolder);
+
   if (!Hive.isAdapterRegistered(ShoeModelAdapter().typeId)) {
     Hive.registerAdapter(ShoeModelAdapter());
   }
@@ -59,21 +56,18 @@ Future<void> main() async {
     Hive.registerAdapter(StatusAdapter());
   }
 
-  if (!newDirectory.existsSync()) {
-    newDirectory.createSync(recursive: true);
-  }
   final adminBox = await Hive.openBox<AdminData>('AdminBox');
   if (adminBox.isEmpty) {
     final defaultAdmin =
         AdminData(adminName: 'Admin', password: 'Password@123');
     adminBox.add(defaultAdmin);
   }
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  MyApp({super.key});
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -113,12 +107,18 @@ class MyApp extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.blue)),
-            //colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.amber),
-            // primaryColor: Colors.white,
             appBarTheme: const AppBarTheme(
                 iconTheme: IconThemeData(color: Colors.white))),
-        home: const Scaffold(
-          body: ScreenSplash(),
+        home: FutureBuilder(
+          future: _initialization,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return const Scaffold(
+                body: ScreenSplash(),
+              );
+            }
+            return const CircularProgressIndicator();
+          },
         ),
       ),
     );
