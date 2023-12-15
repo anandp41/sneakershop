@@ -1,11 +1,11 @@
 {
-    "name": "sneaker_shop",
-    "short_name": "sneaker_shop",
+    "name": "Sneaker Shop",
+    "short_name": "Sneaker Shop",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "An offline app emulating an online sneaker shopping experience.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
