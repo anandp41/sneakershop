@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shop/model/revenuemodel.dart';
 import 'package:sneaker_shop/model/status_adapter.dart';
@@ -101,6 +99,7 @@ class MyApp extends StatelessWidget {
           '/manageorders': (context) => const ScreenManageOrders()
         },
         debugShowCheckedModeBanner: false,
+        title: "Sneaker Shop",
         theme: ThemeData(
             textTheme: Typography.whiteRedmond,
             elevatedButtonTheme: ElevatedButtonThemeData(

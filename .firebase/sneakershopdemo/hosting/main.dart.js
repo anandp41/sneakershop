@@ -12537,13 +12537,14 @@ aak:function aak(a){this.a=a},
 b8o(){return new A.EE(new A.amj(),A.z(t.K,t.Qu))},
 awx:function awx(a,b){this.a=a
 this.b=b},
-u4:function u4(a,b,c,d,e,f){var _=this
+u4:function u4(a,b,c,d,e,f,g){var _=this
 _.c=a
 _.e=b
 _.f=c
-_.db=d
-_.R8=e
-_.a=f},
+_.cx=d
+_.db=e
+_.R8=f
+_.a=g},
 amj:function amj(){},
 amm:function amm(){},
 Ld:function Ld(a){var _=this
@@ -58943,16 +58944,17 @@ if(l==null)l=o.ax.b
 k.a.toString
 s=b==null?B.aR:b
 return new A.Hr(A.ae_(new A.Cq(o,s,B.L,B.W,j,j),l,j,j,n),j)},
-abf(a){var s,r,q,p=this,o=null,n=p.a,m=n.db
-m=m.fr
-s=m
+abf(a){var s,r,q,p,o=this,n=null,m=o.a,l=m.db
+l=l.fr
+s=l
 if(s==null)s=B.bO
-m=n.c
-r=n.e
-n=n.f
-q=p.gaiz()
-p.a.toString
-return new A.Jj(m,o,o,new A.aEm(),o,o,o,o,o,r,n,o,o,o,B.T_,p.gaiH(),"",o,B.a2N,s,o,q,o,o,B.r5,!1,!1,!1,!1,p.gai_(),!1,o,o,o,new A.tD(p,t.bT))},
+l=m.c
+r=m.e
+q=m.f
+m=m.cx
+p=o.gaiz()
+o.a.toString
+return new A.Jj(l,n,n,new A.aEm(),n,n,n,n,n,r,q,n,n,n,B.T_,o.gaiH(),m,n,B.a2N,s,n,p,n,n,B.r5,!1,!1,!1,!1,o.gai_(),!1,n,n,n,new A.tD(o,t.bT))},
 D(a){var s,r=null,q=A.tw(!1,!1,this.abf(a),r,r,r,r,!0,r,r,new A.aEn(),r,r,r)
 this.a.toString
 s=this.d
@@ -102434,7 +102436,7 @@ $1(a){return new A.rN($.ar())},
 $S:611}
 A.anC.prototype={
 $2(a,b){var s=null,r=A.e0(a,!1,t.Y).z,q=A.aG(["/allitems",new A.ano(),"/createuseraccount",new A.anp(),"/userlogin",new A.anq(),"/adminlogin",new A.anu(),"/admindashboard",new A.anv(),"/userdashboard",new A.anw(),"/adminaddbrand",new A.anx(),"/adminaddshoes",new A.any(),"/admininventory",new A.anz(),"/adminsettings",new A.anA(),"/cart",new A.anB(),"/revenue",new A.anr(),"/manageorders",new A.ans()],t.N,t.Ab),p=A.IY(B.Ei,s,new A.xB(A.E_(s,s,B.bO,s,s,s,s,s,s,s,B.j,s,s,s,s,s,s,s,s,s)),B.Dh,s)
-return new A.u4(r,A.nA(new A.ant(),this.a.c,t.Sm),q,p,!1,s)},
+return new A.u4(r,A.nA(new A.ant(),this.a.c,t.Sm),q,"Sneaker Shop",p,!1,s)},
 $S:612}
 A.ano.prototype={
 $1(a){return B.ZL},
