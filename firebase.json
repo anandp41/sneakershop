@@ -1,7 +1,7 @@
 {
   "hosting": {
     "site": "sneakershopdemo",
-    "target": "Sneaker Shop",
+    
     "source": ".",
     "ignore": [
       "firebase.json",
