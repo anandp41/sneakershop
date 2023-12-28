@@ -264,10 +264,12 @@ class SneakerShopProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool shoesBoxEmpty = true;
   Future<void> loadSortedProductsList() async {
     var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
     newProductsList.clear();
     oldProductsList.clear();
+    shoesBoxEmpty = shoesBox.isEmpty;
     newProductsList.addAll(
         shoesBox.values.where((ShoeModel sneaker) => sneaker.isNew == true));
     newProductsList = newProductsList.reversed.toList();

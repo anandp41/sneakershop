@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sneaker_shop/providers/sneakershopprovider.dart';
 import 'package:sneaker_shop/support/largetile.dart';
+import 'package:sneaker_shop/support/textstyles.dart';
 
 class UserNewArrivalTilePanel extends StatelessWidget {
   const UserNewArrivalTilePanel({super.key});
@@ -13,7 +14,14 @@ class UserNewArrivalTilePanel extends StatelessWidget {
     return Consumer<SneakerShopProvider>(builder: (context, provider, child) {
       if (provider.newProductsList.isEmpty) {
         provider.loadSortedProductsList();
-
+        if (provider.shoesBoxEmpty || provider.newProductsList.isEmpty) {
+          return Center(
+            child: Text(
+              "No data found",
+              style: topHeadingStyle,
+            ),
+          );
+        }
         return const Center(child: CircularProgressIndicator());
       } else {
         return Container(
