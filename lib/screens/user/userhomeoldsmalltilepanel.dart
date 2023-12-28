@@ -57,7 +57,14 @@ class UserOldSmallTilePanel extends StatelessWidget {
 
       if (provider.oldProductsList.isEmpty) {
         provider.loadSortedProductsList();
-
+        if (provider.shoesBoxEmpty || provider.oldProductsList.isEmpty) {
+          return Center(
+            child: Text(
+              "No data found",
+              style: topHeadingStyle,
+            ),
+          );
+        }
         return const Center(child: CircularProgressIndicator());
       } else {
         return Container(
