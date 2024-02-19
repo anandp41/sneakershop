@@ -10,8 +10,6 @@ class BottomNavBarProvider extends ChangeNotifier {
 
   void setCurrentIndexAndNotify({required int newIndex}) {
     currentIndex = newIndex;
-    debugPrint('Before Notify');
     notifyListeners();
-    debugPrint('After Notify');
   }
 }

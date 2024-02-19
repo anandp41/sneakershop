@@ -8,7 +8,7 @@ import 'package:sneaker_shop/model/status_adapter.dart';
 import 'package:sneaker_shop/model/usermodel.dart';
 //import 'package:sneaker_shop/support/enum_status.dart';
 
-/// **********************ADMIN OF FUNCTIONS***********************/
+/// **********************ADMIN FUNCTIONS***********************/
 Future<void> addBrandToDb({required String brand}) async {
   var brandsBox = await Hive.openBox<String>('brandsbox');
   await brandsBox.add(brand);

@@ -8,7 +8,6 @@ import 'package:sneaker_shop/model/string_adapter.dart';
 import 'package:sneaker_shop/model/shoemodel.dart';
 import 'package:sneaker_shop/model/usermodel.dart';
 import 'package:sneaker_shop/providers/bottomnavbarprovider.dart';
-import 'package:sneaker_shop/providers/cartprovider.dart';
 import 'package:sneaker_shop/providers/sneakershopprovider.dart';
 import 'package:sneaker_shop/screens/admin/adminaddbrand.dart';
 import 'package:sneaker_shop/screens/admin/adminaddshoes.dart';
@@ -30,7 +29,7 @@ const adminLogStatus = 'Admin Logged';
 const userLogStatus = 'User Logged';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp();
   await Hive.initFlutter();
 
   if (!Hive.isAdapterRegistered(ShoeModelAdapter().typeId)) {
@@ -54,12 +53,12 @@ Future<void> main() async {
     Hive.registerAdapter(StatusAdapter());
   }
 
-  final adminBox = await Hive.openBox<AdminData>('AdminBox');
-  if (adminBox.isEmpty) {
-    final defaultAdmin =
-        AdminData(adminName: 'Admin', password: 'Password@123');
-    adminBox.add(defaultAdmin);
-  }
+  // final adminBox = await Hive.openBox<AdminData>('AdminBox');
+  // if (adminBox.isEmpty) {
+  //   final defaultAdmin =
+  //       AdminData(adminName: 'Admin', password: 'Password@123');
+  //   adminBox.add(defaultAdmin);
+  // }
   runApp(MyApp());
 }
 
@@ -76,9 +75,6 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => BottomNavBarProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => CartProvider(),
         ),
       ],
       builder: (context, child) => MaterialApp(
