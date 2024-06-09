@@ -86,8 +86,8 @@ class CartItemCountManager extends StatelessWidget {
           child: GradientElevatedButton(
             style: const GradientButtonStyle(
                 alignment: Alignment.center,
-                padding: MaterialStatePropertyAll(EdgeInsets.zero),
-                shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)))),
                 gradient: LinearGradient(colors: [
                   Color.fromRGBO(52, 200, 232, 1),

@@ -106,10 +106,10 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? [
               ElevatedButton.icon(
                   style: const ButtonStyle(
-                      shadowColor: MaterialStatePropertyAll(Colors.black),
+                      shadowColor: WidgetStatePropertyAll(Colors.black),
                       // fixedSize: MaterialStatePropertyAll(
                       //     Size(screenSize.width / 3.9, screenSize.height / 10)),
-                      backgroundColor: MaterialStatePropertyAll(
+                      backgroundColor: WidgetStatePropertyAll(
                           Color.fromARGB(210, 4, 52, 92))),
                   label: const Text(
                     'Logout',

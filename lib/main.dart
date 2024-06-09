@@ -21,6 +21,7 @@ import 'package:sneaker_shop/screens/user/allitems.dart';
 import 'package:sneaker_shop/screens/user/cart.dart';
 import 'package:sneaker_shop/screens/user/login.dart';
 import 'package:sneaker_shop/screens/user/userdashboard.dart';
+import 'firebase_options.dart';
 import 'model/adminmodel.dart';
 import 'screens/screen_splash.dart';
 import 'screens/user/screen_signup.dart';
@@ -29,7 +30,9 @@ const adminLogStatus = 'Admin Logged';
 const userLogStatus = 'User Logged';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await Hive.initFlutter();
 
   if (!Hive.isAdapterRegistered(ShoeModelAdapter().typeId)) {

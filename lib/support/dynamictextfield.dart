@@ -123,7 +123,7 @@ class DynamicTextFieldsState extends State<DynamicTextFields> {
               // Add Button
               ElevatedButton(
                 style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(Colors.green)),
+                    backgroundColor: WidgetStatePropertyAll(Colors.green)),
                 onPressed: () {
                   if (sizeControllers.isNotEmpty &&
                       (sizeControllers.last.text.isEmpty ||

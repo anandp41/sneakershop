@@ -212,7 +212,7 @@ class _ScreenEditSneakerState extends State<ScreenEditSneaker> {
                       ElevatedButton(
                         style: const ButtonStyle(
                             backgroundColor:
-                                MaterialStatePropertyAll(Colors.green)),
+                                WidgetStatePropertyAll(Colors.green)),
                         onPressed: () async {
                           await provider.pickImages();
 

@@ -158,8 +158,8 @@ class _UserEditProfileState extends State<UserEditProfile> {
                         right: 0,
                         child: IconButton.filled(
                             style: const ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll(
-                                    Colors.blueAccent)),
+                                backgroundColor:
+                                    WidgetStatePropertyAll(Colors.blueAccent)),
                             color: Colors.white,
                             onPressed: () {
                               _showImagePickerOptions(context);

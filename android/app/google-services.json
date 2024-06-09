@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "173626036175",
+    "project_id": "sneaker-shop-e2612",
+    "storage_bucket": "sneaker-shop-e2612.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173626036175:android:1ba3ff41ab18a982a20cba",
+        "android_client_info": {
+          "package_name": "com.anand.sneaker_shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqJFNtYBLUPfLU6CSyK5ERbyVUqsdoKhw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -244,7 +244,7 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
                       ElevatedButton(
                         style: const ButtonStyle(
                             backgroundColor:
-                                MaterialStatePropertyAll(Colors.green)),
+                                WidgetStatePropertyAll(Colors.green)),
                         onPressed: () async {
                           await provider.pickImages();
 

@@ -1,15 +1,1 @@
-{
-  "hosting": {
-    "site": "sneakershopdemo",
-    
-    "source": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "frameworksBackend": {
-      "region": "us-central1"
-    }
-  }
-}
+{"hosting":{"source":".","ignore":["firebase.json","**/.*","**/node_modules/**"],"frameworksBackend":{"region":"us-central1"}},"firestore":{"rules":"firestore.rules","indexes":"firestore.indexes.json"},"storage":{"rules":"storage.rules"},"flutter":{"platforms":{"android":{"default":{"projectId":"sneaker-shop-e2612","appId":"1:173626036175:android:1ba3ff41ab18a982a20cba","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"sneaker-shop-e2612","configurations":{"android":"1:173626036175:android:1ba3ff41ab18a982a20cba","ios":"1:173626036175:ios:b9489af84c0ae538a20cba","macos":"1:173626036175:ios:b9489af84c0ae538a20cba","web":"1:173626036175:web:cb2bc99f4c57e75ca20cba","windows":"1:173626036175:web:1d1b853f34e63917a20cba"}}}}}}
