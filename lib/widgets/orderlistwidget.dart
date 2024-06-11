@@ -98,9 +98,9 @@ class _OrderListWidgetState extends State<OrderListWidget> {
                         });
                         Navigator.pop(context);
 
-                        await updateStatus(
-                            newStatus: newValue!,
-                            id: revenueData.transactionId!);
+                        // await updateStatus(
+                        //     newStatus: newValue!,
+                        //     id: revenueData.transactionId!);
                       },
                       items: Status.values
                           .map<DropdownMenuItem<Status>>((Status value) {

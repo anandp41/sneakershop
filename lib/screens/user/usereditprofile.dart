@@ -3,13 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:sneaker_shop/db/dbhelper.dart';
 import 'package:sneaker_shop/model/usermodel.dart';
 import 'package:sneaker_shop/providers/sneakershopprovider.dart';
+import 'package:sneaker_shop/repositories/common_firebase_repository.dart';
 import 'package:sneaker_shop/support/colors.dart';
 import 'package:sneaker_shop/support/customtextfield.dart';
 import 'package:sneaker_shop/support/my_button.dart';
 import 'package:sneaker_shop/support/textstyles.dart';
+
+import '../../db/dbhelper.dart';
 
 // ignore: must_be_immutable
 class UserEditProfile extends StatefulWidget {
@@ -36,9 +38,7 @@ class _UserEditProfileState extends State<UserEditProfile> {
 
   var _addressController = TextEditingController();
 
-  late File? _imageFile = provider.currentUser!.imagePath != null
-      ? File(provider.currentUser!.imagePath!)
-      : null;
+  File? _imageFile;
 
   String? imageFilePath;
 
@@ -78,24 +78,32 @@ class _UserEditProfileState extends State<UserEditProfile> {
     }
 
     Future<void> updateUser() async {
+      final imagePath = imageFilePath == null
+          ? ''
+          : await storeFileToFirebase(
+              serverFilePath: widget.user.email, file: File(imageFilePath!));
       final name = _nameController.text.trim();
       final phoneNumber = _phoneController.text.trim();
       final email = widget.user.email;
       final password = widget.user.password;
-      final imagePath = imageFilePath;
       final address = _addressController.text.trim();
       final cartItem = widget.user.cart;
       final favList = widget.user.favList;
-      UserData updatedUser = UserData(
+      var updatedUser = UserData(
           name: name,
           email: email,
-          imagePath: imagePath,
           phoneno: phoneNumber,
-          password: password,
           address: address,
+          password: password,
+          imagePath: imagePath,
           cart: cartItem,
           favList: favList);
       await updateUserToDB(updatedUser: updatedUser);
+      imageFilePath = null;
+      _imageFile = null;
+      provider.loadUser(email: email);
+      Provider.of<SneakerShopProvider>(context, listen: false)
+          .notifyListeners();
       popPage();
     }
 
@@ -143,14 +151,23 @@ class _UserEditProfileState extends State<UserEditProfile> {
                               width: 4,
                               color: Colors.blue,
                             )),
-                        child: _imageFile != null
-                            ? Image.file(
-                                _imageFile!,
-                                fit: BoxFit.cover,
+                        child: _imageFile == null
+                            ? CircleAvatar(
+                                backgroundImage: provider
+                                            .currentUser!.imagePath !=
+                                        null
+                                    ? NetworkImage(
+                                        provider.currentUser!.imagePath!,
+                                      ) as ImageProvider
+                                    : const AssetImage('assets/images/def.png'),
+                                radius: 100,
                               )
-                            : Image.asset(
-                                'assets/images/def.png',
-                                fit: BoxFit.cover,
+                            : CircleAvatar(
+                                radius: 100,
+                                child: Image.file(
+                                  _imageFile!,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                       ),
                       Positioned(
@@ -241,6 +258,9 @@ class _UserEditProfileState extends State<UserEditProfile> {
                                   await updateUser();
                                   provider.loadUser(
                                       email: provider.currentUser!.email);
+                                  Provider.of<SneakerShopProvider>(context,
+                                          listen: false)
+                                      .notifyListeners();
                                   showCustomSnackBar('Success', Colors.green);
                                 } else {
                                   showCustomSnackBar(

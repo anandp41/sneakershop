@@ -7,6 +7,7 @@ import 'package:simple_markdown_editor/widgets/markdown_form_field.dart';
 import 'package:sneaker_shop/db/dbhelper.dart';
 import 'package:sneaker_shop/model/shoemodel.dart';
 import 'package:sneaker_shop/providers/sneakershopprovider.dart';
+import 'package:sneaker_shop/repositories/common_firebase_repository.dart';
 import 'package:sneaker_shop/screens/admin/adminappbar.dart';
 import 'package:sneaker_shop/support/colors.dart';
 import 'package:sneaker_shop/support/customtextfield.dart';
@@ -23,6 +24,7 @@ class ScreenAdminAddShoes extends StatefulWidget {
 
 class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
   final TextEditingController shoeNameController = TextEditingController();
+  final TextEditingController shoeIdController = TextEditingController();
   final TextEditingController shoePriceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   bool isNewProduct = false;
@@ -81,7 +83,7 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
         setState(() {
           shoeNameController.clear();
           shoePriceController.clear();
-
+          shoeIdController.clear();
           descriptionController.clear();
           formKey = GlobalKey<FormState>();
         });
@@ -90,7 +92,7 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
       Future addSneaker() async {
         if (formKey.currentState!.validate()) {
           final shoeName = shoeNameController.text.trim().toUpperCase();
-
+          final shoeId = shoeIdController.text.trim();
           final shoePrice = double.parse(shoePriceController.text.trim());
           final description = descriptionController.text.trim();
           final shoeBrand = provider.selectedBrand;
@@ -98,27 +100,35 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
 
           final List<Map<String, int>> availableSizesandStock =
               provider.mappedListOfSizesAndStock;
-          ShoeModel sneaker = ShoeModel(
-            name: shoeName,
-            price: shoePrice,
-            description: description,
-            brand: shoeBrand!,
-            availableSizesandStock: availableSizesandStock,
-            isNew: isNewProduct,
-          );
-          if (provider.tempPreviewPaths.isNotEmpty) {
-            int shoeId = await addSneakerToDb(shoe: sneaker);
-            await provider.saveSelectedImagesinApplicationDirectory(
-                shoeId: shoeId);
 
-            await updateSneakerWithImages(
-                sneakerImagePaths: provider.copiedPaths, shoeId: shoeId);
+          if (provider.tempPreviewPaths.isEmpty) {
+            ShoeModel sneaker = ShoeModel(
+              shoeId: shoeId,
+              name: shoeName,
+              price: shoePrice,
+              description: description,
+              brand: shoeBrand!,
+              availableSizesandStock: availableSizesandStock,
+              isNew: isNewProduct,
+            );
+            await addSneakerToDb(shoe: sneaker);
           } else {
+            var imagePaths = await storeMultipleFilesToFirebase(
+                serverFilePath: shoeId, paths: provider.tempPreviewPaths);
+            ShoeModel sneaker = ShoeModel(
+                shoeId: shoeId,
+                name: shoeName,
+                price: shoePrice,
+                description: description,
+                brand: shoeBrand!,
+                availableSizesandStock: availableSizesandStock,
+                isNew: isNewProduct,
+                imagePath: imagePaths);
             await addSneakerToDb(shoe: sneaker);
           }
 
           provider.clearAllDataInDynamicTextfield();
-          provider.getAllStock();
+          await provider.getAllStock();
           clearFormFields();
           showSuccessCustomSnackBar();
           provider.clearTempPreviewPaths();
@@ -152,11 +162,22 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
                   ),
                   const SizedBox(height: 10.0),
                   MyCustomTextField(
+                    label: 'Sneaker ID',
+                    controller: shoeIdController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter a shoe ID";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 10.0),
+                  MyCustomTextField(
                     label: 'Price',
                     controller: shoePriceController,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Enter a valid Price';
+                        return 'Enter decimal values';
                       }
                       RegExp exp = RegExp(r"(\d+\.\d{1,2})");
 

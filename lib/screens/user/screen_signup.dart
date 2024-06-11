@@ -240,7 +240,7 @@ class _ScreenSignupState extends State<ScreenSignup> {
           phoneno: phoneNumber,
           address: address,
           password: password);
-      saveNewUserToDb(user);
+      saveUserDataToFirebase(userData: user);
       showCustomSnackBarSave();
       _nameController.clear();
 

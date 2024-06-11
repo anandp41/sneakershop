@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sneaker_shop/db/dbhelper.dart';
+// import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sneaker_shop/model/adminmodel.dart';
 import 'package:sneaker_shop/screens/admin/adminappbar.dart';
 import 'package:sneaker_shop/support/colors.dart';
@@ -64,8 +65,7 @@ class _ScreenAdminSettingsState extends State<ScreenAdminChangePw> {
   }
 
   Future<void> loadAdmin() async {
-    final adminBox = await Hive.openBox<AdminData>('AdminBox');
-    admin = adminBox.get(0)!;
+    admin = await adminLogin();
   }
 
   @override
@@ -83,7 +83,7 @@ class _ScreenAdminSettingsState extends State<ScreenAdminChangePw> {
               children: <Widget>[
                 MyCustomTextField(
                   controller: oldPasswordController,
-                  label: 'Old Password',
+                  label: 'Old Password (${admin.password})',
                   obscure: obscureValuePass,
                   suffixIcon: IconButton(
                       onPressed: () {
@@ -292,9 +292,9 @@ class _ScreenAdminSettingsState extends State<ScreenAdminChangePw> {
                   color: adminGridTileColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  onPressed: () {
+                  onPressed: () async {
                     if (adminSettingsformKey.currentState!.validate()) {
-                      _handlePasswordChange();
+                      await _handlePasswordChange();
                     } else {
                       showCustomSnackBarFail();
                     }
@@ -312,11 +312,7 @@ class _ScreenAdminSettingsState extends State<ScreenAdminChangePw> {
     );
   }
 
-  void _handlePasswordChange() {
-    final adminBox = Hive.box<AdminData>('adminBox');
-    final updatedAdmin = AdminData(
-        adminName: admin.adminName, password: newPasswordController.text);
-    adminBox.put(0, updatedAdmin);
+  Future<void> _handlePasswordChange() async {
     showCustomSnackBarSave();
     Navigator.of(context).pop();
   }

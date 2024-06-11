@@ -18,7 +18,6 @@ class ScreenAdminAddBrand extends StatefulWidget {
 
 class _ScreenAdminAddBrandState extends State<ScreenAdminAddBrand> {
   final TextEditingController brandNameController = TextEditingController();
-
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -30,21 +29,22 @@ class _ScreenAdminAddBrandState extends State<ScreenAdminAddBrand> {
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: formKey,
+            autovalidateMode: AutovalidateMode.disabled,
             child: Column(
               children: [
                 MyCustomTextField(
                   label: 'Brand name',
                   controller: brandNameController,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter a valid brand name';
-                    } else {
-                      for (var element in provider.brands) {
-                        if (element.toUpperCase() == value.toUpperCase()) {
-                          return 'Brand already exists';
-                        }
+                    // if (value == '') {
+                    //   return 'Enter a valid brand name';
+                    // } else {
+                    for (var element in provider.brands) {
+                      if (element.toUpperCase() == value?.toUpperCase()) {
+                        return 'Brand already exists';
                       }
                     }
+                    // }
                     return null;
                   },
                 ),

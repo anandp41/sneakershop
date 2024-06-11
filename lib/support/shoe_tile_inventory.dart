@@ -75,7 +75,7 @@ class InventoryShoeTile extends StatelessWidget {
                   InkWell(
                     onTap: () async {
                       await deleteSneaker(
-                          productId: shoe.shoeId!, context: context);
+                          productId: shoe.shoeId, context: context);
                     },
                     child: Container(
                       decoration: const BoxDecoration(
@@ -173,7 +173,7 @@ class InventoryShoeTile extends StatelessWidget {
 }
 
 Future<void> deleteSneaker(
-    {required int productId, required BuildContext context}) async {
+    {required String productId, required BuildContext context}) async {
   showDialog(
     context: context,
     builder: (ctx) => Consumer<SneakerShopProvider>(

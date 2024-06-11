@@ -34,22 +34,22 @@ class BrandTile extends StatelessWidget {
           ),
           Row(
             children: [
-              InkWell(
-                child: Container(
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.white60),
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: screenSize.width / 30,
-              ),
+              // InkWell(
+              //   child: Container(
+              //     decoration: const BoxDecoration(
+              //         shape: BoxShape.circle, color: Colors.white60),
+              //     child: const Padding(
+              //       padding: EdgeInsets.all(8.0),
+              //       child: Icon(
+              //         Icons.edit,
+              //         color: Colors.black,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(
+              //   width: screenSize.width / 30,
+              // ),
               InkWell(
                 onTap: () => deleteBrand(brand: brand, context: context),
                 child: Container(

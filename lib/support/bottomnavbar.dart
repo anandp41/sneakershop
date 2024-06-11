@@ -63,12 +63,15 @@ class BottomShopNavBar extends StatelessWidget {
               tabs: const [
                 GButton(
                   icon: Icons.home_filled,
+                  iconSize: 35,
                 ),
                 GButton(
                   icon: Icons.shopping_cart_outlined,
+                  iconSize: 35,
                 ),
                 GButton(
                   icon: Icons.person,
+                  iconSize: 35,
                 )
               ]),
         ),

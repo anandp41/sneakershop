@@ -1,12 +1,14 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sneaker_shop/db/dbhelper.dart';
 import 'package:sneaker_shop/model/revenuemodel.dart';
 import 'package:sneaker_shop/model/shoemodel.dart';
 import 'package:sneaker_shop/model/usermodel.dart';
+import 'package:sneaker_shop/repositories/common_firebase_repository.dart';
+
+import '../core/strings.dart';
 
 class SneakerShopProvider extends ChangeNotifier {
   String? selectedBrand;
@@ -14,9 +16,9 @@ class SneakerShopProvider extends ChangeNotifier {
   FilePickerResult? pickedFiles;
   List<String> copiedPaths = [];
   List<String> tempPreviewPaths = [];
-  List<String> pathsToDeleteFromStoragePermanently = [];
+  // List<String> pathsToDeleteFromStoragePermanently = [];
   List brands = [];
-  List products = [];
+  List<ShoeModel> products = [];
   String? tempProfPath;
 
   /// *******************START OF ADMIN FUNCTIONS*******************/
@@ -24,23 +26,6 @@ class SneakerShopProvider extends ChangeNotifier {
     tempPreviewPaths = List.from(imagesPath);
 
     debugPrint('loadSavedImagesPaths $tempPreviewPaths ');
-  }
-
-  String extractFileName(String path) {
-    String fileName;
-
-    // Find the last occurrence of '/' in the path
-    int lastIndex = path.lastIndexOf('/');
-
-    // Extract the substring after the last '/'
-    if (lastIndex != -1 && lastIndex < path.length - 1) {
-      fileName = path.substring(lastIndex + 1);
-    } else {
-      // If there's no '/' or it's the last character, use the whole path
-      fileName = path;
-    }
-
-    return fileName;
   }
 
   Future<void> pickImages() async {
@@ -74,25 +59,25 @@ class SneakerShopProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteTheseImageFiles(List<String> paths) async {
-    for (String path in paths) {
-      if (!tempPreviewPaths.contains(path)) {
-        if (await File(path).exists()) {
-          await File(path).delete(recursive: true);
-        }
-      }
-    }
-    pathsToDeleteFromStoragePermanently.clear();
-  }
+  // Future<void> deleteTheseImageFiles(List<String> paths) async {
+  //   for (String path in paths) {
+  //     if (!tempPreviewPaths.contains(path)) {
+  //       if (await File(path).exists()) {
+  //         await File(path).delete(recursive: true);
+  //       }
+  //     }
+  //   }
+  //   // pathsToDeleteFromStoragePermanently.clear();
+  // }
 
-  void queuePathForPermanentDeletion(String path) {
-    pathsToDeleteFromStoragePermanently.add(path);
-  }
+  // void queuePathForPermanentDeletion(String path) {
+  //   pathsToDeleteFromStoragePermanently.add(path);
+  // }
 
   void deleteImageFromPanel(String path) {
     tempPreviewPaths.remove(path);
     notifyListeners();
-    queuePathForPermanentDeletion(path);
+    // queuePathForPermanentDeletion(path);
   }
 
   void clearTempPreviewPaths() {
@@ -102,59 +87,27 @@ class SneakerShopProvider extends ChangeNotifier {
   }
 
   Future<void> saveSelectedImagesinApplicationDirectory(
-      {required int shoeId}) async {
-    copiedPaths = [];
-
-    // Get the app's documents directory
-
-    for (int i = 0; i < tempPreviewPaths.length; i++) {
-      debugPrint('the for loop inside');
-      String fileName = extractFileName(tempPreviewPaths[i]);
-      String filePath = tempPreviewPaths[i];
-
-      // Get the app's documents directory
-      Directory documentsDir = await getApplicationDocumentsDirectory();
-
-      // Create the destination directory if it doesn't exist
-      Directory destinationDir =
-          Directory('${documentsDir.path}/images/$shoeId');
-      if (!await destinationDir.exists()) {
-        await destinationDir.create(recursive: true);
-      }
-
-      // Create a unique destination path for each file
-      String destinationPath = '${destinationDir.path}/$fileName';
-      // Copy the file to the documents directory
-      File sourceFile = File(filePath);
-      if (!await File(destinationPath).exists()) {
-        await sourceFile.copy(destinationPath);
-      }
-
-      copiedPaths.add(destinationPath);
-      debugPrint('copiedPaths working');
-    }
-    deleteTheseImageFiles(pathsToDeleteFromStoragePermanently);
+      {required String shoeId}) async {
+    copiedPaths = await storeMultipleFilesToFirebase(
+        serverFilePath: shoeId, paths: tempPreviewPaths);
   }
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   List<Map<String, int>> mappedListOfSizesAndStock = [];
-  putSneakerById(int id) async {
-    var boxOfProducts = await Hive.openBox<ShoeModel>('productsbox');
-    selectedShoe = boxOfProducts.get(id);
-  }
+  // putSneakerById(int id) async {
+  //   // var boxOfProducts = await Hive.openBox<ShoeModel>('productsbox');
+  //   selectedShoe = boxOfProducts.get(id);
+  // }
 
-  void adminLogin() async {
-    // await Hive.openBox<TransactionData>('transactionsbox');
-    navigatorKey.currentState!.pushNamedAndRemoveUntil(
-      '/admindashboard',
-      (route) => false,
-    );
-  }
-
-  Future<void> checkIfBrandAlreadyExist(String name) async {
-    var boxBrands = await Hive.openBox<String>('brandsbox');
-    boxBrands.values.contains(name);
+  Future<bool> checkIfBrandAlreadyExist(String nameToSearch) async {
+    var brandsMap = await firestore.collection(firebaseBrandsCollection).get();
+    var brands = brandsMap.docs;
+    for (var eachBrand in brands) {
+      var name = eachBrand.id;
+      return name == nameToSearch;
+    }
+    return false;
   }
 
   void receiveListOfMap(List<Map<String, int>> map) {
@@ -168,74 +121,113 @@ class SneakerShopProvider extends ChangeNotifier {
   }
 
   Future<void> getBrandData() async {
-    var boxBrands = await Hive.openBox<String>('brandsbox');
-
     brands.clear();
-    brands.addAll(boxBrands.values);
-    debugPrint('getBrandData has been invoked');
+    var brandsList = await firestore.collection(firebaseBrandsCollection).get();
+    var data = brandsList.docs;
+    for (var item in data) {
+      brands.add(item.id);
+    }
+
     notifyListeners();
   }
 
-  Future<void> getAllStock() async {
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
+  Future<void> getBrandDataForWishList() async {
+    brands.clear();
+    var brandsList = await firestore.collection(firebaseBrandsCollection).get();
+    var data = brandsList.docs;
+    for (var item in data) {
+      brands.add(item.id);
+    }
+  }
 
+  Future<void> getAllStock() async {
+    var map = await firestore.collection(firebaseShoesCollection).get();
+    var data = map.docs;
     products.clear();
-    products.addAll(shoesBox.values);
+    for (var item in data) {
+      var shoeFromMap = ShoeModel.fromMap(item.data());
+      products.add(shoeFromMap);
+    }
     notifyListeners();
+  }
+
+  Future<void> getAllStockForWishList() async {
+    var map = await firestore.collection(firebaseShoesCollection).get();
+    var data = map.docs;
+    products.clear();
+    for (var item in data) {
+      var shoeFromMap = ShoeModel.fromMap(item.data());
+      products.add(shoeFromMap);
+    }
+  }
+
+  ShoeModel returnShoeFromProductsList({required String shoeId}) {
+    for (var shoe in products) {
+      if (shoe.shoeId == shoeId) {
+        return shoe;
+      }
+    }
+    return products[0];
   }
 
   List revenue = [];
   Future<void> getRevenue() async {
-    var revenueBox = await Hive.openBox<RevenueData>('revenuebox');
-
+    var map = await firestore.collection(firebaseRevenueCollection).get();
+    var data = map.docs;
     revenue.clear();
-    revenue.addAll(revenueBox.values);
+    for (var item in data) {
+      var revenueFromMap = RevenueData.fromMap(item.data());
+      revenue.add(revenueFromMap);
+    }
     revenue = revenue.reversed.toList();
     notifyListeners();
   }
 
   List orders = [];
   Future<void> getUsersOrders() async {
-    var revenueBox = await Hive.openBox<RevenueData>('revenuebox');
-
+    var map = await firestore.collection(firebaseRevenueCollection).get();
+    var data = map.docs;
     orders.clear();
-    orders.addAll(revenueBox.values
-        .where((element) => element.email == currentUser!.email));
+    for (var item in data) {
+      var revenueFromMap = RevenueData.fromMap(item.data());
+      if (revenueFromMap.email == currentUser!.email) {
+        orders.add(revenueFromMap);
+      }
+    }
     orders = orders.reversed.toList();
-
-    notifyListeners();
+    // notifyListeners();
   }
 
-  Future<void> clearRevenueDB() async {
-    var revenueBox = await Hive.openBox<RevenueData>('revenuebox');
+  // Future<void> clearRevenueDB() async {
+  //   var revenueBox = await Hive.openBox<RevenueData>('revenuebox');
 
-    revenueBox.clear();
+  //   revenueBox.clear();
 
-    getRevenue();
-    notifyListeners();
-  }
+  //   getRevenue();
+  //   notifyListeners();
+  // }
 
-  Future<void> clearProductsDB() async {
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
+  // Future<void> clearProductsDB() async {
+  //   var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
 
-    shoesBox.clear();
+  //   shoesBox.clear();
 
-    getAllStock();
-    notifyListeners();
-  }
+  //   getAllStock();
+  //   notifyListeners();
+  // }
 
-  Future<bool> isProductsEmpty() async {
-    var boxOfProducts = await Hive.openBox('productsbox');
-    return boxOfProducts.isEmpty;
-  }
+  // Future<bool> isProductsEmpty() async {
+  //   // var boxOfProducts = await Hive.openBox('productsbox');
+  //   return boxOfProducts.isEmpty;
+  // }
 
-  void adminLogout() async {
-    await Hive.close();
-    navigatorKey.currentState!.pushNamedAndRemoveUntil(
-      '/userlogin',
-      (route) => false,
-    );
-  }
+  // void adminLogout() async {
+  //   await Hive.close();
+  //   navigatorKey.currentState!.pushNamedAndRemoveUntil(
+  //     '/userlogin',
+  //     (route) => false,
+  //   );
+  // }
 
   ///***********************END OF ADMIN FUNCTIONS******************/
   ///***********************START OF USER FUNCTIONS*****************/
@@ -266,85 +258,263 @@ class SneakerShopProvider extends ChangeNotifier {
 
   bool shoesBoxEmpty = true;
   Future<void> loadSortedProductsList() async {
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
+    var map = await firestore.collection(firebaseShoesCollection).get();
+    var data = map.docs;
     newProductsList.clear();
     oldProductsList.clear();
-    shoesBoxEmpty = shoesBox.isEmpty;
-    newProductsList.addAll(
-        shoesBox.values.where((ShoeModel sneaker) => sneaker.isNew == true));
-    newProductsList = newProductsList.reversed.toList();
-    oldProductsList.addAll(
-        shoesBox.values.where((ShoeModel sneaker) => sneaker.isNew != true));
-    oldProductsList = oldProductsList.reversed.toList();
-    notifyListeners();
+    for (var item in data) {
+      var shoeFromMap = ShoeModel.fromMap(item.data());
+      if (shoeFromMap.isNew) {
+        newProductsList.add(shoeFromMap);
+      } else {
+        oldProductsList.add(shoeFromMap);
+      }
+    }
   }
 
   List<ShoeModel> favshoes = [];
 
-  Future<void> loadFavoriteShoes() async {
-    favshoes.clear();
-    if (currentUser!.favList.isNotEmpty) {
-      for (var id in currentUser!.favList) {
-        // debugPrint('favList id $id');
-        // debugPrint(products.length.toString());
-        favshoes.add(products.singleWhere((shoe) => shoe.shoeId == id));
-      }
-    }
-    notifyListeners();
-  }
+  // Future<void> loadFavoriteShoes() async {
+  //   favshoes.clear();
+  //   await getAllStock();
+  //   if (currentUser!.favList.isNotEmpty) {
+  //     for (var id in currentUser!.favList) {
+  //       // debugPrint('favList id $id');
+  //       // debugPrint(products.length.toString());
+  //       favshoes.add(products.singleWhere((shoe) => shoe.shoeId == id));
+  //     }
+  //   }
+  //   notifyListeners();
+  // }
 
-  void unLoadFavoriteShoes() {
-    favshoes.clear();
-  }
+  // void unLoadFavoriteShoes() {
+  //   favshoes.clear();
+  // }
 
   Future<void> loadUser({required String email}) async {
-    var usersBox = await Hive.openBox<UserData>('usersbox');
-    currentUser =
-        usersBox.values.singleWhere((element) => element.email == email);
-    // currentUser!.cart.clear();
-    // currentUser!.save();
-    await loadSortedProductsList();
-    // currentUser!.favList = [];
-    // currentUser!.save();
-    await getAllStock();
-    await loadFavoriteShoes();
+    var userDoc =
+        await firestore.collection(firebaseUsersCollection).doc(email).get();
+    currentUser = UserData.fromMap(userDoc.data()!);
+    // notifyListeners();
   }
+
+  // var usersBox = await Hive.openBox<UserData>('usersbox');
+  // currentUser =
+  //     usersBox.values.singleWhere((element) => element.email == email);
+  // // currentUser!.cart.clear();
+  // // currentUser!.save();
+  // await loadSortedProductsList();
+  // // currentUser!.favList = [];
+  // // currentUser!.save();
+  // await getAllStock();
+  // await loadFavoriteShoes();
+  //}
 
   void unLoadUser() {
     currentUser = null;
-    unLoadFavoriteShoes();
   }
 
-  void addToFavList({required int idToAdd}) async {
+  Future<void> addToFavList({required String idToAdd}) async {
     if (!currentUser!.favList.contains(idToAdd)) {
-      currentUser!.favList.add(idToAdd);
-      await currentUser!.save();
+      List<String> newList = [...currentUser!.favList, idToAdd];
+      await firestore
+          .collection(firebaseUsersCollection)
+          .doc(currentUser!.email)
+          .update({'favList': newList});
+      await loadUser(email: currentUser!.email);
+      notifyListeners();
     }
-    await loadFavoriteShoes();
   }
 
-  Future<void> removeFromFavList({required int idToRemove}) async {
+  Future<void> removeFromFavList({required String idToRemove}) async {
     if (currentUser!.favList.contains(idToRemove)) {
-      currentUser!.favList.remove(idToRemove);
-      await currentUser!.save();
+      List<String> newList = currentUser!.favList;
+      newList.remove(idToRemove);
+      await firestore
+          .collection(firebaseUsersCollection)
+          .doc(currentUser!.email)
+          .update({'favList': newList});
+      await loadUser(email: currentUser!.email);
+      notifyListeners();
     }
-    await loadFavoriteShoes();
   }
 
-  bool isThisSneakerAFavorite({required int idToCheck}) {
+  bool isThisSneakerAFavorite({required String idToCheck}) {
     return currentUser!.favList.contains(idToCheck);
   }
 
   int showCartcount() {
     int cartCount = 0;
-    for (Map<String, int> map in currentUser!.cart) {
-      cartCount = cartCount + map['Quantity']!;
+    for (Map<String, dynamic> map in currentUser!.cart) {
+      cartCount = cartCount + map['Quantity']! as int;
     }
     return cartCount;
   }
 
+  Future<void> addToCart({required String sneakerId, required int size}) async {
+    for (Map<String, dynamic> map in currentUser!.cart) {
+      if (map['SneakerId'] == sneakerId && map['Size'] == size) {
+        var newMapToReplace = map;
+        newMapToReplace['Quantity']++;
+        var newCart = currentUser!.cart;
+        newCart.remove(map);
+        newCart.add(newMapToReplace);
+        await firestore
+            .collection(firebaseUsersCollection)
+            .doc(currentUser!.email)
+            .update({'cart': newCart});
+        // map['Quantity']++;
+        // await currentUser!.save();
+
+        notifyListeners();
+        return;
+      }
+    }
+    Map<String, dynamic> map = {
+      'SneakerId': sneakerId,
+      'Size': size,
+      'Quantity': 1
+    };
+    List<Map<String, dynamic>> newCart = currentUser!.cart;
+    newCart.add(map);
+    await firestore
+        .collection(firebaseUsersCollection)
+        .doc(currentUser!.email)
+        .update({'cart': newCart});
+
+    notifyListeners();
+  }
+
+  Future<void> removeFromCart(
+      {required String sneakerId, required int size}) async {
+    currentUser!.cart.removeWhere((element) =>
+        element['SneakerId'] == sneakerId && element['Size'] == size);
+    var newCart = currentUser!.cart;
+    await firestore
+        .collection(firebaseUsersCollection)
+        .doc(currentUser!.email)
+        .update({'cart': newCart});
+
+    notifyListeners();
+  }
+
+  Future<void> incrementASneakerCountInCart(
+      {required String sneakerId, required int size}) async {
+    for (int i = 0; i < currentUser!.cart.length; i++) {
+      if (currentUser!.cart[i]['SneakerId'] == sneakerId &&
+          currentUser!.cart[i]['Size'] == size) {
+        if (currentUser!.cart[i]['Quantity'] != 10) {
+          currentUser!.cart[i]['Quantity'] =
+              currentUser!.cart[i]['Quantity']! + 1;
+        }
+        break;
+      }
+    }
+    var newCart = currentUser!.cart;
+    await firestore
+        .collection(firebaseUsersCollection)
+        .doc(currentUser!.email)
+        .update({'cart': newCart});
+
+    notifyListeners();
+  }
+
+  Future<void> decrementASneakerCountInCart(
+      {required String sneakerId, required int size}) async {
+    for (int i = 0; i < currentUser!.cart.length; i++) {
+      if (currentUser!.cart[i]['SneakerId'] == sneakerId &&
+          currentUser!.cart[i]['Size'] == size) {
+        if (currentUser!.cart[i]['Quantity'] != 1) {
+          currentUser!.cart[i]['Quantity'] =
+              currentUser!.cart[i]['Quantity']! - 1;
+        }
+        break;
+      }
+    }
+    var newCart = currentUser!.cart;
+    await firestore
+        .collection(firebaseUsersCollection)
+        .doc(currentUser!.email)
+        .update({'cart': newCart});
+
+    notifyListeners();
+  }
+
+  Future<bool> stockLimitReached(
+      {required String sneakerId,
+      required int size,
+      required currentCartQuantity}) async {
+    late int currentStock;
+
+    var shoeMap = await firestore
+        .collection(firebaseShoesCollection)
+        .doc(sneakerId)
+        .get();
+    var shoe = ShoeModel.fromMap(shoeMap.data()!);
+    for (var map in shoe.availableSizesandStock) {
+      if (map['Size'] == size) {
+        currentStock = map['Stock']!;
+      }
+    }
+
+    bool result = currentCartQuantity == currentStock;
+
+    return result;
+  }
+
+  Future<bool> stockNotSufficient(
+      {required int quantity,
+      required String sneakerId,
+      required int size}) async {
+    // var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
+    // for (ShoeModel shoe in shoesBox.values) {
+    //   if (shoe.shoeId == sneakerId) {
+    var shoeMap = await firestore
+        .collection(firebaseShoesCollection)
+        .doc(sneakerId)
+        .get();
+    var shoe = ShoeModel.fromMap(shoeMap.data()!);
+    for (Map<String, int> sizeAndStock in shoe.availableSizesandStock) {
+      if (sizeAndStock['Size'] == size) {
+        return (quantity > sizeAndStock['Stock']!);
+      }
+    }
+    //   }
+    // }
+    return false;
+  }
+
+  Future<String> getImagePathofThisId({required String sneakerId}) async {
+    var shoeMap = await firestore
+        .collection(firebaseShoesCollection)
+        .doc(sneakerId)
+        .get();
+    var shoe = ShoeModel.fromMap(shoeMap.data()!);
+    return shoe.imagePath[0];
+  }
+
+  Future<String> getNameofThisId({required String sneakerId}) async {
+    var shoeMap = await firestore
+        .collection(firebaseShoesCollection)
+        .doc(sneakerId)
+        .get();
+    var shoe = ShoeModel.fromMap(shoeMap.data()!);
+    return shoe.name;
+  }
+
+  Future<double> getPriceofThisId({required String sneakerId}) async {
+    var shoeMap = await firestore
+        .collection(firebaseShoesCollection)
+        .doc(sneakerId)
+        .get();
+    var shoe = ShoeModel.fromMap(shoeMap.data()!);
+    return shoe.price;
+  }
+
   Future<double> totalAmountDue() async {
     double amount = 0;
+    await loadUser(email: currentUser!.email);
+    // notifyListeners();
     for (Map<String, dynamic> map in currentUser!.cart) {
       if (!await stockNotSufficient(
           sneakerId: map['SneakerId'],
@@ -357,152 +527,33 @@ class SneakerShopProvider extends ChangeNotifier {
     return amount;
   }
 
-  Future<void> addToCart({required int sneakerId, required int size}) async {
-    for (Map<String, dynamic> map in currentUser!.cart) {
-      if (map['SneakerId'] == sneakerId && map['Size'] == size) {
-        map['Quantity']++;
-        await currentUser!.save();
-
-        notifyListeners();
-        return;
-      }
-    }
-    Map<String, int> map = {
-      'SneakerId': sneakerId,
-      'Size': size,
-      'Quantity': 1
-    };
-    currentUser!.cart.add(map);
-    await currentUser!.save();
-
-    notifyListeners();
-  }
-
-  void removeFromCart({required int sneakerId, required int size}) async {
-    currentUser!.cart.removeWhere((element) =>
-        element['SneakerId'] == sneakerId && element['Size'] == size);
-
-    await currentUser!.save();
-    notifyListeners();
-  }
-
-  void incrementASneakerCountInCart(
-      {required int sneakerId, required int size}) async {
-    for (int i = 0; i < currentUser!.cart.length; i++) {
-      if (currentUser!.cart[i]['SneakerId'] == sneakerId &&
-          currentUser!.cart[i]['Size'] == size) {
-        if (currentUser!.cart[i]['Quantity'] != 10) {
-          currentUser!.cart[i]['Quantity'] =
-              currentUser!.cart[i]['Quantity']! + 1;
-        }
-        break;
-      }
-    }
-    await currentUser!.save();
-    notifyListeners();
-  }
-
-  void decrementASneakerCountInCart(
-      {required int sneakerId, required int size}) async {
-    for (int i = 0; i < currentUser!.cart.length; i++) {
-      if (currentUser!.cart[i]['SneakerId'] == sneakerId &&
-          currentUser!.cart[i]['Size'] == size) {
-        if (currentUser!.cart[i]['Quantity'] != 1) {
-          currentUser!.cart[i]['Quantity'] =
-              currentUser!.cart[i]['Quantity']! - 1;
-        }
-        break;
-      }
-    }
-
-    await currentUser!.save();
-    notifyListeners();
-  }
-
-  Future<bool> stockLimitReached(
-      {required int sneakerId,
-      required int size,
-      required currentCartQuantity}) async {
-    late int currentStock;
-
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
-    for (var shoe in shoesBox.values) {
-      if (shoe.shoeId == sneakerId) {
-        for (var map in shoe.availableSizesandStock) {
-          if (map['Size'] == size) {
-            currentStock = map['Stock']!;
-          }
-        }
-      }
-    }
-
-    bool result = currentCartQuantity == currentStock;
-
-    return result;
-  }
-
-  Future<bool> stockNotSufficient(
-      {required int quantity,
-      required int sneakerId,
-      required int size}) async {
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
-    for (ShoeModel shoe in shoesBox.values) {
-      if (shoe.shoeId == sneakerId) {
-        for (Map<String, int> sizeAndStock in shoe.availableSizesandStock) {
-          if (sizeAndStock['Size'] == size) {
-            return (quantity > sizeAndStock['Stock']!);
-          }
-        }
-      }
-    }
-    return false;
-  }
-
-  Future<String?> getImagePathofThisId({required int sneakerId}) async {
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
-    return shoesBox.get(sneakerId)!.imagePath[0];
-  }
-
-  Future<String> getNameofThisId({required int sneakerId}) async {
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
-    return shoesBox.get(sneakerId)!.name;
-  }
-
-  Future<double> getPriceofThisId({required int sneakerId}) async {
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
-    return shoesBox.get(sneakerId)!.price;
-  }
-
   Future<void> checkOut() async {
-    late double amountToRevenue;
-    List<Map<String, int>> toDeleteAfterCheckOut = [];
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
-
-    for (Map<String, int> itemInCart in currentUser!.cart) {
-      for (ShoeModel shoeInBox in shoesBox.values) {
-        if (shoeInBox.shoeId == itemInCart['SneakerId']) {
-          for (Map<String, int> aSizeOfAShoeInBox
-              in shoeInBox.availableSizesandStock) {
-            if (aSizeOfAShoeInBox['Size'] == itemInCart['Size'] &&
-                aSizeOfAShoeInBox['Stock']! > 0 &&
-                aSizeOfAShoeInBox['Stock']! >= itemInCart['Quantity']!) {
-              aSizeOfAShoeInBox['Stock'] =
-                  aSizeOfAShoeInBox['Stock']! - itemInCart['Quantity']!;
-              amountToRevenue =
-                  (await getPriceofThisId(sneakerId: itemInCart['SneakerId']!) *
-                      itemInCart['Quantity']!);
-
-              await addToRevenue(
-                size: itemInCart['Size']!,
-                amount: amountToRevenue,
-                sneakerId: itemInCart['SneakerId']!,
-                number: itemInCart['Quantity']!,
-                email: currentUser!.email,
-              );
-
-              toDeleteAfterCheckOut.add(itemInCart);
-            }
-          }
+    double amountToRevenue = 0;
+    List<Map<String, dynamic>> toDeleteAfterCheckOut = [];
+    for (Map<String, dynamic> itemInCart in currentUser!.cart) {
+      var shoeMap = await firestore
+          .collection(firebaseShoesCollection)
+          .doc(itemInCart['SneakerId'])
+          .get();
+      var shoeInBox = ShoeModel.fromMap(shoeMap.data()!);
+      for (Map<String, int> aSizeOfAShoeInBox
+          in shoeInBox.availableSizesandStock) {
+        if (aSizeOfAShoeInBox['Size'] == itemInCart['Size'] &&
+            aSizeOfAShoeInBox['Stock']! > 0 &&
+            aSizeOfAShoeInBox['Stock']! >= itemInCart['Quantity']!) {
+          aSizeOfAShoeInBox['Stock'] =
+              aSizeOfAShoeInBox['Stock']! - itemInCart['Quantity']! as int;
+          amountToRevenue +=
+              (await getPriceofThisId(sneakerId: itemInCart['SneakerId']!) *
+                  itemInCart['Quantity']!);
+          await addToRevenue(
+            size: itemInCart['Size']!,
+            amount: amountToRevenue,
+            sneakerId: itemInCart['SneakerId']!,
+            number: itemInCart['Quantity']!,
+            email: currentUser!.email,
+          );
+          toDeleteAfterCheckOut.add(itemInCart);
         }
       }
     }
@@ -513,25 +564,34 @@ class SneakerShopProvider extends ChangeNotifier {
               element['Size'] == item['Size']));
     }
     toDeleteAfterCheckOut.clear();
-    await currentUser!.save();
+    var newCart = currentUser!.cart;
+    await firestore
+        .collection(firebaseUsersCollection)
+        .doc(currentUser!.email)
+        .update({'cart': newCart});
 
     getUsersOrders();
   }
 
   Future<bool> isAddButtonOn() async {
-    var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
+    // var shoesBox = await Hive.openBox<ShoeModel>('productsbox');
     bool result = false;
     for (var element in currentUser!.cart) {
-      for (var shoe in shoesBox.values) {
-        if (element['SneakerId'] == shoe.shoeId) {
-          for (var size in shoe.availableSizesandStock) {
-            if (element['Size'] == size['Size'] &&
-                element['Quantity']! <= size['Stock']!) {
-              result = true;
-            }
-          }
+      var shoeMap = await firestore
+          .collection(firebaseShoesCollection)
+          .doc(element['SneakerId'])
+          .get();
+      var shoe = ShoeModel.fromMap(shoeMap.data()!);
+      // for (var shoe in shoesBox.values) {
+      //   if (element['SneakerId'] == shoe.shoeId) {
+      for (var size in shoe.availableSizesandStock) {
+        if (element['Size'] == size['Size'] &&
+            element['Quantity']! <= size['Stock']!) {
+          return true;
         }
       }
+      //   }
+      // }
     }
 
     return result;

@@ -24,7 +24,7 @@ class ScreenCart extends StatelessWidget {
     Size screenSize = MediaQuery.of(context).size;
     return Consumer<SneakerShopProvider>(
       builder: (context, provider, child) {
-        late bool isAddOn;
+        bool isAddOn = false;
         Future<void> loadButtonStatus() async {
           isAddOn = await provider.isAddButtonOn();
         }
@@ -89,7 +89,6 @@ class ScreenCart extends StatelessWidget {
                     ),
                     FutureBuilder(
                         future: loadButtonStatus(),
-                        // initialData: isAddOn = false,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.done) {

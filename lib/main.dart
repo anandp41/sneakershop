@@ -1,12 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:sneaker_shop/model/revenuemodel.dart';
-import 'package:sneaker_shop/model/status_adapter.dart';
-import 'package:sneaker_shop/model/string_adapter.dart';
-import 'package:sneaker_shop/model/shoemodel.dart';
-import 'package:sneaker_shop/model/usermodel.dart';
+
 import 'package:sneaker_shop/providers/bottomnavbarprovider.dart';
 import 'package:sneaker_shop/providers/sneakershopprovider.dart';
 import 'package:sneaker_shop/screens/admin/adminaddbrand.dart';
@@ -22,7 +17,6 @@ import 'package:sneaker_shop/screens/user/cart.dart';
 import 'package:sneaker_shop/screens/user/login.dart';
 import 'package:sneaker_shop/screens/user/userdashboard.dart';
 import 'firebase_options.dart';
-import 'model/adminmodel.dart';
 import 'screens/screen_splash.dart';
 import 'screens/user/screen_signup.dart';
 
@@ -33,28 +27,28 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await Hive.initFlutter();
+  // await Hive.initFlutter();
 
-  if (!Hive.isAdapterRegistered(ShoeModelAdapter().typeId)) {
-    Hive.registerAdapter(ShoeModelAdapter());
-  }
-  if (!Hive.isAdapterRegistered(StringAdapter().typeId)) {
-    Hive.registerAdapter(StringAdapter());
-  }
-  if (!Hive.isAdapterRegistered(AdminDataAdapter().typeId)) {
-    Hive.registerAdapter(AdminDataAdapter());
-  }
-  if (!Hive.isAdapterRegistered(UserDataAdapter().typeId)) {
-    Hive.registerAdapter(UserDataAdapter());
-  }
+  // if (!Hive.isAdapterRegistered(ShoeModelAdapter().typeId)) {
+  //   Hive.registerAdapter(ShoeModelAdapter());
+  // }
+  // if (!Hive.isAdapterRegistered(StringAdapter().typeId)) {
+  //   Hive.registerAdapter(StringAdapter());
+  // }
+  // if (!Hive.isAdapterRegistered(AdminDataAdapter().typeId)) {
+  //   Hive.registerAdapter(AdminDataAdapter());
+  // }
+  // if (!Hive.isAdapterRegistered(UserDataAdapter().typeId)) {
+  //   Hive.registerAdapter(UserDataAdapter());
+  // }
 
-  if (!Hive.isAdapterRegistered(RevenueDataAdapter().typeId)) {
-    Hive.registerAdapter(RevenueDataAdapter());
-  }
+  // if (!Hive.isAdapterRegistered(RevenueDataAdapter().typeId)) {
+  //   Hive.registerAdapter(RevenueDataAdapter());
+  // }
 
-  if (!Hive.isAdapterRegistered(StatusAdapter().typeId)) {
-    Hive.registerAdapter(StatusAdapter());
-  }
+  // if (!Hive.isAdapterRegistered(StatusAdapter().typeId)) {
+  //   Hive.registerAdapter(StatusAdapter());
+  // }
 
   // final adminBox = await Hive.openBox<AdminData>('AdminBox');
   // if (adminBox.isEmpty) {

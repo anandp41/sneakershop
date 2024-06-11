@@ -9,7 +9,7 @@ import 'package:sneaker_shop/support/colors.dart';
 import 'package:sneaker_shop/support/textstyles.dart';
 
 class CartItemCountManager extends StatelessWidget {
-  final int sneakerId;
+  final String sneakerId;
   final int size;
   final int quantity;
   const CartItemCountManager(

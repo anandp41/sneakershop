@@ -1,27 +1,21 @@
-import 'package:hive_flutter/hive_flutter.dart';
-part 'shoemodel.g.dart';
+class ShoeModel {
+  final String shoeId;
 
-@HiveType(typeId: 3)
-class ShoeModel extends HiveObject {
-  @HiveField(0)
-  int? shoeId;
-  @HiveField(1)
   final String name;
-  @HiveField(2)
+
   List<String> imagePath;
-  @HiveField(3)
+
   final double price;
 
-  @HiveField(4)
   final String brand;
-  @HiveField(5)
+
   final List<Map<String, int>> availableSizesandStock;
-  @HiveField(6)
+
   final bool isNew;
-  @HiveField(7)
+
   String? description;
   ShoeModel(
-      {this.shoeId,
+      {required this.shoeId,
       required this.name,
       this.imagePath = const [],
       required this.price,
@@ -29,4 +23,32 @@ class ShoeModel extends HiveObject {
       required this.availableSizesandStock,
       required this.isNew,
       this.description});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'shoeId': shoeId,
+      'name': name,
+      'imagePath': imagePath,
+      'price': price,
+      'brand': brand,
+      'availableSizesandStock': availableSizesandStock,
+      'isNew': isNew,
+      'description': description,
+    };
+  }
+
+  factory ShoeModel.fromMap(Map<String, dynamic> map) {
+    return ShoeModel(
+      shoeId: map['shoeId'],
+      name: map['name'] ?? '',
+      imagePath: List<String>.from(map['imagePath']),
+      price: map['price']?.toDouble() ?? 0.0,
+      brand: map['brand'] ?? '',
+      availableSizesandStock: (map['availableSizesandStock'] as List)
+          .map((item) => Map<String, int>.from(item))
+          .toList(),
+      isNew: map['isNew'] ?? false,
+      description: map['description'],
+    );
+  }
 }

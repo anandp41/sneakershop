@@ -15,7 +15,7 @@ import 'package:sneaker_shop/support/textstyles.dart';
 class UserOrderListTile extends StatelessWidget {
   final RevenueData revenueData;
   UserOrderListTile({super.key, required this.revenueData});
-  late String? path;
+  String path = '';
 
   late String name;
   @override
@@ -51,7 +51,7 @@ class UserOrderListTile extends StatelessWidget {
 
                           await updateStatus(
                               newStatus: Status.cancelled,
-                              id: revenueData.transactionId!);
+                              id: revenueData.transactionId);
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(
@@ -186,9 +186,9 @@ class UserOrderListTile extends StatelessWidget {
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.done) {
-                                  if (path != null) {
-                                    return Image.file(
-                                      File(path!),
+                                  if (path != '') {
+                                    return Image.network(
+                                      path,
                                       width: 75,
                                       fit: BoxFit.scaleDown,
                                       filterQuality: FilterQuality.high,

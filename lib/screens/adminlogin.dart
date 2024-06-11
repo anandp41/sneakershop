@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+// import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sneaker_shop/db/dbhelper.dart';
 import 'package:sneaker_shop/providers/sneakershopprovider.dart';
 
 import 'package:sneaker_shop/support/colors.dart';
 
 import '../main.dart';
-import '../model/adminmodel.dart';
 import '../support/customtextfield.dart';
 import '../support/my_button.dart';
 
@@ -52,14 +52,11 @@ class _ScreenAdminLoginState extends State<ScreenAdminLogin> {
     double screenWidth = MediaQuery.of(context).size.width;
     return Consumer<SneakerShopProvider>(builder: (context, value, child) {
       void loginAdmin() async {
-        final adminBox = await Hive.openBox<AdminData>('AdminBox');
-        final admin = adminBox.get(0);
-        if (admin != null &&
-            admin.password == _adminPasswordController.text.trim()) {
+        final admin = await adminLogin();
+        if (admin.password == _adminPasswordController.text.trim()) {
           _adminPasswordController.clear();
           final sharedPref = await SharedPreferences.getInstance();
           sharedPref.setBool(adminLogStatus, true);
-          value.adminLogin();
           gotoAdminHome();
         } else {
           showCustomSnackBarFail('Incorrect Password');
@@ -98,7 +95,7 @@ class _ScreenAdminLoginState extends State<ScreenAdminLogin> {
                             children: [
                               const MyCustomTextField(
                                 label: 'Admin name',
-                                initialValue: 'Admin',
+                                initialValue: 'admin',
                                 readOnly: true,
                               ),
                               MyCustomTextField(
@@ -116,13 +113,13 @@ class _ScreenAdminLoginState extends State<ScreenAdminLogin> {
                                           : Icons.visibility_off,
                                       color: adminGridTileColor,
                                     )),
-                                label: 'Password',
+                                label: 'Password (Default : "Password@123")',
                                 controller: _adminPasswordController,
                                 validator: (value) {
                                   RegExp regx = RegExp(
                                       r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
                                   if (!regx.hasMatch(value as String)) {
-                                    return 'Enter valid password';
+                                    return 'Enter valid password \n(one uppercase, one lowercase, one special symbol,\n 8 characters in total)';
                                   } else {
                                     return null;
                                   }

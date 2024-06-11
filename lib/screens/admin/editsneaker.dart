@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_markdown_editor/widgets/markdown_form_field.dart';
-import 'package:sneaker_shop/db/dbhelper.dart';
 import 'package:sneaker_shop/model/shoemodel.dart';
 import 'package:sneaker_shop/providers/sneakershopprovider.dart';
 import 'package:sneaker_shop/screens/admin/adminappbar.dart';
@@ -11,6 +10,8 @@ import 'package:sneaker_shop/support/customtextfield.dart';
 import 'package:sneaker_shop/support/dynamictextfield.dart';
 import 'package:sneaker_shop/support/editscreenimagespreview.dart';
 import 'package:sneaker_shop/support/textstyles.dart';
+
+import '../../db/dbhelper.dart';
 
 class ScreenEditSneaker extends StatefulWidget {
   final ShoeModel sneaker;
@@ -78,7 +79,7 @@ class _ScreenEditSneakerState extends State<ScreenEditSneaker> {
         if (formKey.currentState!.validate()) {
           Navigator.pop(context1);
           await provider.saveSelectedImagesinApplicationDirectory(
-              shoeId: widget.sneaker.shoeId!);
+              shoeId: widget.sneaker.shoeId);
           final shoeName = shoeNameController.text.trim().toUpperCase();
 
           final shoePrice = double.parse(shoePriceController.text.trim());
@@ -285,8 +286,8 @@ class _ScreenEditSneakerState extends State<ScreenEditSneaker> {
 
   // @override
   // void dispose() {
-  //   final provider = Provider.of<SneakerShopProvider>(context);
-  //   provider.clearImageModule();
+  // final provider = Provider.of<SneakerShopProvider>(context);
+  // provider.clearImageModule();
   //   super.dispose();
   // }
 }

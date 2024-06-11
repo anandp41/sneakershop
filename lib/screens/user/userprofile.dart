@@ -147,8 +147,8 @@ class ScreenUserProfile extends StatelessWidget {
                           child: CircleAvatar(
                             backgroundImage:
                                 provider.currentUser!.imagePath != null
-                                    ? FileImage(
-                                        File(provider.currentUser!.imagePath!),
+                                    ? NetworkImage(
+                                        provider.currentUser!.imagePath!,
                                         // filterQuality: FilterQuality.high,
                                         // fit: BoxFit.scaleDown,
                                       ) as ImageProvider

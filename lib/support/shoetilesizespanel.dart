@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sneaker_shop/support/textstyles.dart';
 
 class AdminShoeTileSizesPanel extends StatelessWidget {
-  final List<Map<String, dynamic>> availableSizesandStock;
+  final List<Map<String, int>> availableSizesandStock;
   const AdminShoeTileSizesPanel(
       {super.key, required this.availableSizesandStock});
 

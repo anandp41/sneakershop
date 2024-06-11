@@ -16,7 +16,8 @@ class ShoesListWidget extends StatelessWidget {
       if (provider.products.isEmpty) {
         provider.getAllStock();
 
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+            child: Text("Add inventory in the Add Sneakers page"));
       } else {
         return ListView.builder(
             itemCount: provider.products.length,

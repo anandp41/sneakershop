@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sneaker_shop/db/dbhelper.dart';
-import 'package:sneaker_shop/model/usermodel.dart';
 import 'package:sneaker_shop/providers/sneakershopprovider.dart';
 import 'package:sneaker_shop/support/colors.dart';
 import 'package:sneaker_shop/support/customtextfield.dart';
@@ -90,17 +88,8 @@ class _ScreenUserChangePwState extends State<ScreenUserChangePw> {
     }
 
     void handlePasswordChange() async {
-      final updatedUser = UserData(
-        password: newPasswordController.text,
-        name: provider.currentUser!.name,
-        address: provider.currentUser!.address,
-        email: provider.currentUser!.email,
-        phoneno: provider.currentUser!.phoneno,
-        cart: provider.currentUser!.cart,
-        favList: provider.currentUser!.favList,
-      );
       Navigator.of(context).pop();
-      await updateUserToDB(updatedUser: updatedUser);
+      // await updateUserToDB(updatedUser: updatedUser);
       showCustomSnackBarSave();
     }
 

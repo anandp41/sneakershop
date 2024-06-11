@@ -36,5 +36,3 @@ class ScreenInventory extends StatelessWidget {
     });
   }
 }
-
-int i = 1;

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:sneaker_shop/model/shoemodel.dart';
@@ -56,8 +54,8 @@ class WishListTile extends StatelessWidget {
                   child: sneaker.imagePath.isNotEmpty
                       ? Transform.rotate(
                           angle: -math.pi / 6.6,
-                          child: Image.file(
-                            File(sneaker.imagePath.first),
+                          child: Image.network(
+                            sneaker.imagePath.first,
                             height: contextSize.height / 9.2,
                             // width: screenSize.width / 1,
                             filterQuality: FilterQuality.high,
@@ -96,7 +94,7 @@ class WishListTile extends StatelessWidget {
                 ),
               ),
               FavIcon(
-                  shoeId: sneaker.shoeId!, iconSize: contextSize.width / 11.5)
+                  shoeId: sneaker.shoeId, iconSize: contextSize.width / 11.5)
             ],
           ),
         ),

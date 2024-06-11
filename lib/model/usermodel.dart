@@ -1,27 +1,13 @@
-import 'package:hive_flutter/hive_flutter.dart';
-
-part 'usermodel.g.dart';
-
-@HiveType(typeId: 5)
-class UserData extends HiveObject {
-  @HiveField(0)
+class UserData {
   final String name;
-  @HiveField(1)
   final String email;
-  @HiveField(2)
   final String phoneno;
-  @HiveField(3)
   final String address;
-  @HiveField(4)
   final String password;
-  @HiveField(5)
   final String? imagePath;
-  @HiveField(6)
-  final List<Map<String, int>> cart;
-  @HiveField(7)
+  final List<Map<String, dynamic>> cart;
   final List<Map<String, dynamic>> orderHistory;
-  @HiveField(8)
-  List<int> favList;
+  final List<String> favList;
   UserData(
       {required this.name,
       required this.email,
@@ -32,4 +18,42 @@ class UserData extends HiveObject {
       this.cart = const [],
       this.orderHistory = const [],
       this.favList = const []});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'phoneno': phoneno,
+      'address': address,
+      'password': password,
+      'imagePath': imagePath,
+      'cart': cart,
+      'orderHistory': orderHistory,
+      'favList': favList,
+    };
+  }
+
+  factory UserData.fromMap(Map<String, dynamic> map) {
+    return UserData(
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      phoneno: map['phoneno'] ?? '',
+      address: map['address'] ?? '',
+      password: map['password'] ?? '',
+      imagePath: map['imagePath'],
+      cart: List<Map<String, dynamic>>.from(
+          map['cart'] //?.map((x) => Map<String, int>.fromMap(x))
+          ),
+      orderHistory: List<Map<String, dynamic>>.from(
+          map['orderHistory'] //?.map((x) => Map<String, dynamic>.fromMap(x))
+
+          ),
+      favList: List<String>.from(map['favList']),
+    );
+  }
+
+  // String toJson() => json.encode(toMap());
+
+  // factory UserData.fromJson(String source) =>
+  //     UserData.fromMap(json.decode(source));
 }

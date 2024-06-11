@@ -13,7 +13,7 @@ class BrandListWidget extends StatelessWidget {
         value.getBrandData();
 
         return const Center(
-          child: CircularProgressIndicator(),
+          child: Text("Add brands here"),
         );
       } else {
         return ListView.builder(

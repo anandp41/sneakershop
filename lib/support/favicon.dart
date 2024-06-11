@@ -5,7 +5,7 @@ import 'package:sneaker_shop/support/colors.dart';
 import 'package:sneaker_shop/support/textstyles.dart';
 
 class FavIcon extends StatefulWidget {
-  final int shoeId;
+  final String shoeId;
   final double iconSize;
 
   const FavIcon({
@@ -28,14 +28,14 @@ class _FavIconState extends State<FavIcon> {
     super.initState();
   }
 
-  void toggleFavorite() {
+  Future<void> toggleFavorite() async {
     setState(() {
       isFavorite = !isFavorite;
     });
     if (isFavorite) {
-      provider.addToFavList(idToAdd: widget.shoeId);
+      await provider.addToFavList(idToAdd: widget.shoeId);
     } else {
-      provider.removeFromFavList(idToRemove: widget.shoeId);
+      await provider.removeFromFavList(idToRemove: widget.shoeId);
     }
   }
 
@@ -49,7 +49,7 @@ class _FavIconState extends State<FavIcon> {
                   affirmText: 'Yes',
                   cancelText: 'No',
                   context: context)
-              : toggleFavorite();
+              : await toggleFavorite();
         },
         icon: isFavorite
             ? Icon(

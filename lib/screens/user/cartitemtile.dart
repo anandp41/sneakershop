@@ -13,7 +13,7 @@ class CartItemTile extends StatelessWidget {
   final Map<String, dynamic> cartItem;
   CartItemTile({super.key, required this.cartItem});
 
-  late String? path;
+  String path = '';
 
   late String name;
 
@@ -174,9 +174,9 @@ class CartItemTile extends StatelessWidget {
                 future: loadImage(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    if (path != null) {
-                      return Image.file(
-                        File(path!),
+                    if (path != '') {
+                      return Image.network(
+                        path,
                         width: 75,
                         fit: BoxFit.scaleDown,
                         filterQuality: FilterQuality.high,

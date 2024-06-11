@@ -1,12 +1,20 @@
-import 'package:hive_flutter/hive_flutter.dart';
-part 'adminmodel.g.dart';
-
-@HiveType(typeId: 1)
 class AdminData {
-  @HiveField(0)
   final String adminName;
-  @HiveField(1)
   final String password;
 
   AdminData({required this.adminName, required this.password});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'adminName': adminName,
+      'password': password,
+    };
+  }
+
+  factory AdminData.fromMap(Map<String, dynamic> map) {
+    return AdminData(
+      adminName: map['adminName'] ?? '',
+      password: map['password'] ?? '',
+    );
+  }
 }

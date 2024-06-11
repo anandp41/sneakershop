@@ -142,22 +142,24 @@ class _ScreenDetailsState extends State<ScreenDetails> {
                               ),
                               SizedBox(
                                 height: 50,
-                                child: GridView.builder(
-                                  itemCount: widget
-                                      .sneaker.availableSizesandStock.length,
-                                  scrollDirection: Axis.horizontal,
-                                  gridDelegate:
-                                      SliverGridDelegateWithMaxCrossAxisExtent(
-                                          mainAxisSpacing: 20,
-                                          mainAxisExtent:
-                                              screenSize.width / 5.5,
-                                          maxCrossAxisExtent:
-                                              screenSize.height / 17),
-                                  itemBuilder: (context, index) {
-                                    return SizeTile(
-                                        size: widget.sneaker
-                                            .availableSizesandStock[index]);
-                                  },
+                                child: Expanded(
+                                  child: GridView.builder(
+                                    itemCount: widget
+                                        .sneaker.availableSizesandStock.length,
+                                    scrollDirection: Axis.horizontal,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                                            mainAxisSpacing: 20,
+                                            // mainAxisExtent:
+                                            //     70 //screenSize.width // / 5.5
+                                            // ,
+                                            maxCrossAxisExtent: 70),
+                                    itemBuilder: (context, index) {
+                                      return SizeTile(
+                                          size: widget.sneaker
+                                              .availableSizesandStock[index]);
+                                    },
+                                  ),
                                 ),
                               ),
                               const SizedBox(
@@ -192,7 +194,7 @@ class _ScreenDetailsState extends State<ScreenDetails> {
                               onTap: () {
                                 if (!isSelectedSizeNull) {
                                   provider.addToCart(
-                                      sneakerId: widget.sneaker.shoeId!,
+                                      sneakerId: widget.sneaker.shoeId,
                                       size: provider.selectedSize!);
                                 }
                               },

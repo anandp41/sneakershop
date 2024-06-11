@@ -54,7 +54,7 @@ class ItemSmallTile extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: FavIcon(
-                        shoeId: sneaker.shoeId!,
+                        shoeId: sneaker.shoeId,
                         iconSize: screenSize.width / 11.5),
                   ),
                   Expanded(
@@ -64,8 +64,8 @@ class ItemSmallTile extends StatelessWidget {
                       child: sneaker.imagePath.isNotEmpty
                           ? Transform.rotate(
                               angle: -math.pi / 6.6,
-                              child: Image.file(
-                                File(sneaker.imagePath.first),
+                              child: Image.network(
+                                sneaker.imagePath.first,
                                 //height: widget.screenSize.height / 5,
                                 width: screenSize.width,
                                 filterQuality: FilterQuality.high,

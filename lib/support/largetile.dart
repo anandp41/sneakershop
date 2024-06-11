@@ -82,7 +82,7 @@ class ItemLargeTile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 16.0),
                       child: FavIcon(
-                          shoeId: sneaker.shoeId!,
+                          shoeId: sneaker.shoeId,
                           iconSize: screenSize.width / 10),
                     )
                   ],
@@ -94,8 +94,8 @@ class ItemLargeTile extends StatelessWidget {
                               bottom: 80, left: 10, right: 10),
                           child: Transform.rotate(
                             angle: -math.pi / 6.6,
-                            child: Image.file(
-                              File(sneaker.imagePath.first),
+                            child: Image.network(
+                              sneaker.imagePath.first,
                               width: screenSize.width,
                               filterQuality: FilterQuality.high,
                               fit: BoxFit.scaleDown,

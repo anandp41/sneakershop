@@ -11,6 +11,7 @@ class MyCustomTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final String? initialValue;
   final bool readOnly;
+  final TextStyle? errorStyle;
   const MyCustomTextField(
       {super.key,
       required this.label,
@@ -22,6 +23,7 @@ class MyCustomTextField extends StatelessWidget {
       this.suffixIcon,
       this.initialValue,
       this.readOnly = false,
+      this.errorStyle,
       this.onChanged});
 
   @override
@@ -41,6 +43,7 @@ class MyCustomTextField extends StatelessWidget {
         obscuringCharacter: '*',
         keyboardType: type,
         decoration: InputDecoration(
+          errorStyle: errorStyle,
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(
                   color: Color.fromRGBO(255, 255, 255, 0.702), width: 2),

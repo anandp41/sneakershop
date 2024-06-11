@@ -11,36 +11,50 @@ class UserNewArrivalTilePanel extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Consumer<SneakerShopProvider>(builder: (context, provider, child) {
-      if (provider.newProductsList.isEmpty) {
-        provider.loadSortedProductsList();
-        if (provider.shoesBoxEmpty || provider.newProductsList.isEmpty) {
-          return Center(
-            child: Text(
-              "No data found",
-              style: topHeadingStyle,
-            ),
-          );
-        }
-        return const Center(child: CircularProgressIndicator());
-      } else {
-        return Container(
-          height: size.height / 2.5,
-          padding: const EdgeInsets.only(left: 16),
-          child: GridView.builder(
-              padding: const EdgeInsets.all(0),
-              scrollDirection: Axis.horizontal,
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  mainAxisExtent: size.width / 1.6,
-                  maxCrossAxisExtent: size.height / 2.5,
-                  mainAxisSpacing: 20),
-              itemCount: provider.newProductsList.length,
-              itemBuilder: (context, index) => ItemLargeTile(
+    return Consumer<SneakerShopProvider>(
+      builder: (context, provider, child) {
+        return FutureBuilder(
+          future: provider.loadSortedProductsList(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  "Error loading data",
+                  style: topHeadingStyle,
+                ),
+              );
+            } else if (provider.newProductsList.isEmpty) {
+              return Center(
+                child: Text(
+                  "No data found",
+                  style: topHeadingStyle,
+                ),
+              );
+            } else {
+              return Container(
+                height: size.height / 2.5,
+                padding: const EdgeInsets.only(left: 16),
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(0),
+                  scrollDirection: Axis.horizontal,
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    mainAxisExtent: size.width / 1.6,
+                    maxCrossAxisExtent: size.height / 2.5,
+                    mainAxisSpacing: 20,
+                  ),
+                  itemCount: provider.newProductsList.length,
+                  itemBuilder: (context, index) => ItemLargeTile(
                     screenSize: size,
                     sneaker: provider.newProductsList[index],
-                  )),
+                  ),
+                ),
+              );
+            }
+          },
         );
-      }
-    });
+      },
+    );
   }
 }

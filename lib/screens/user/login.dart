@@ -62,8 +62,9 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
               prefs.setString(loggedInUserString, email);
             });
 
-            provider.loadUser(email: email);
-
+            await provider.loadUser(email: email);
+            Provider.of<SneakerShopProvider>(context, listen: false)
+                .notifyListeners();
             goToUserDashBoard();
           } else {
             showCustomSnackBarFail("Email and and Password do not match");
