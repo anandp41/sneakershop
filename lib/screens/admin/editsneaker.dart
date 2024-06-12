@@ -77,6 +77,7 @@ class _ScreenEditSneakerState extends State<ScreenEditSneaker> {
 
       Future<void> updateSneaker() async {
         if (formKey.currentState!.validate()) {
+          showSuccessCustomSnackBar();
           Navigator.pop(context1);
           await provider.saveSelectedImagesinApplicationDirectory(
               shoeId: widget.sneaker.shoeId);
@@ -102,7 +103,7 @@ class _ScreenEditSneakerState extends State<ScreenEditSneaker> {
           provider.clearAllDataInDynamicTextfield();
 
           provider.getAllStock();
-          showSuccessCustomSnackBar();
+
           provider.clearTempPreviewPaths();
         } else {
           showFailedCustomSnackBar();

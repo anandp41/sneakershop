@@ -28,6 +28,7 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
   final TextEditingController shoePriceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   bool isNewProduct = false;
+  bool processing = false;
   var formKey = GlobalKey<FormState>();
 
   Future<bool> _requestPermission(Permission permission) async {
@@ -81,6 +82,8 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
 
       void clearFormFields() {
         setState(() {
+          provider.selectedBrand = null;
+
           shoeNameController.clear();
           shoePriceController.clear();
           shoeIdController.clear();
@@ -91,12 +94,14 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
 
       Future addSneaker() async {
         if (formKey.currentState!.validate()) {
+          setState(() {
+            processing = true;
+          });
           final shoeName = shoeNameController.text.trim().toUpperCase();
           final shoeId = shoeIdController.text.trim();
           final shoePrice = double.parse(shoePriceController.text.trim());
           final description = descriptionController.text.trim();
           final shoeBrand = provider.selectedBrand;
-          provider.selectedBrand = null;
 
           final List<Map<String, int>> availableSizesandStock =
               provider.mappedListOfSizesAndStock;
@@ -132,7 +137,9 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
           clearFormFields();
           showSuccessCustomSnackBar();
           provider.clearTempPreviewPaths();
-          setState(() {});
+          setState(() {
+            processing = false;
+          });
         } else {
           showFailedCustomSnackBar();
         }
@@ -319,11 +326,16 @@ class _ScreenAdminAddShoesState extends State<ScreenAdminAddShoes> {
                     alignment: Alignment.center,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                          disabledBackgroundColor: Colors.white30,
                           backgroundColor: adminGridTileColor),
-                      onPressed: () async {
-                        await addSneaker();
-                      },
-                      child: const Text('Add Sneaker'),
+                      onPressed: processing
+                          ? null
+                          : () async {
+                              await addSneaker();
+                            },
+                      child: processing
+                          ? const CircularProgressIndicator()
+                          : const Text('Add Sneaker'),
                     ),
                   ),
                 ],

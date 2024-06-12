@@ -38,13 +38,28 @@ Future<void> updateSneakerInDb({required ShoeModel shoe}) async {
       .set(shoe.toMap());
 }
 
+Future<void> deleteImageFromDb({required String pathToDelete}) async {
+  Uri uri = Uri.parse(Uri.decodeFull(pathToDelete));
+
+  // Extract the path from the URL
+  String path = uri.path;
+
+  // Split the path by '/' and extract the necessary parts
+  List<String> segments = path.split('/');
+
+  String folderName = segments[segments.length - 2];
+  String fileName = segments[segments.length - 1];
+  await deleteFile(
+      serverFilePath: 'Profile_Images/Shoe_Images/$folderName/$fileName');
+}
+
 Future<void> deleteSneakerFromDb({required String sneakerId}) async {
   var shoeMap =
       await firestore.collection(firebaseShoesCollection).doc(sneakerId).get();
   var shoe = ShoeModel.fromMap(shoeMap.data()!);
   if (shoe.imagePath.isNotEmpty) {
     for (var path in shoe.imagePath) {
-      await deleteFile(serverFilePath: path);
+      await deleteImageFromDb(pathToDelete: path);
     }
   }
 
@@ -89,7 +104,7 @@ Future<bool> doesEmailPasswordMatch(
   return result;
 }
 
-Future<AdminData> adminLogin() async {
+Future<AdminData> returnAdminLogin() async {
   var adminDoc =
       await firestore.collection(firebaseUsersCollection).doc('admin').get();
   var adminMap = adminDoc.data();

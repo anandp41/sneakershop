@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,8 +50,8 @@ class _ScreenAdminLoginState extends State<ScreenAdminLogin> {
     // double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return Consumer<SneakerShopProvider>(builder: (context, value, child) {
-      void loginAdmin() async {
-        final admin = await adminLogin();
+      Future<void> loginAdmin() async {
+        final admin = await returnAdminLogin();
         if (admin.password == _adminPasswordController.text.trim()) {
           _adminPasswordController.clear();
           final sharedPref = await SharedPreferences.getInstance();

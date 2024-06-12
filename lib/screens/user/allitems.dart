@@ -40,8 +40,8 @@ class ScreenAllItems extends StatelessWidget {
           fit: BoxFit.fill,
         ),
         Padding(
-          padding: EdgeInsets.only(
-              left: 8, right: 8, bottom: 10, top: screenSize.height / 9),
+          padding:
+              const EdgeInsets.only(left: 8, right: 8, bottom: 10, top: 120),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

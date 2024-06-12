@@ -102,8 +102,6 @@ class _UserEditProfileState extends State<UserEditProfile> {
       imageFilePath = null;
       _imageFile = null;
       provider.loadUser(email: email);
-      Provider.of<SneakerShopProvider>(context, listen: false)
-          .notifyListeners();
       popPage();
     }
 
@@ -258,9 +256,7 @@ class _UserEditProfileState extends State<UserEditProfile> {
                                   await updateUser();
                                   provider.loadUser(
                                       email: provider.currentUser!.email);
-                                  Provider.of<SneakerShopProvider>(context,
-                                          listen: false)
-                                      .notifyListeners();
+
                                   showCustomSnackBar('Success', Colors.green);
                                 } else {
                                   showCustomSnackBar(

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +24,7 @@ class _AllItemsTileState extends State<AllItemsTile> {
   void initState() {
     provider = Provider.of<SneakerShopProvider>(context, listen: false);
     isFavorite =
-        provider.isThisSneakerAFavorite(idToCheck: widget.sneaker.shoeId!);
+        provider.isThisSneakerAFavorite(idToCheck: widget.sneaker.shoeId);
     super.initState();
   }
 
@@ -35,9 +33,9 @@ class _AllItemsTileState extends State<AllItemsTile> {
       isFavorite = !isFavorite;
     });
     if (isFavorite) {
-      provider.addToFavList(idToAdd: widget.sneaker.shoeId!);
+      provider.addToFavList(idToAdd: widget.sneaker.shoeId);
     } else {
-      provider.removeFromFavList(idToRemove: widget.sneaker.shoeId!);
+      provider.removeFromFavList(idToRemove: widget.sneaker.shoeId);
     }
   }
 
@@ -115,8 +113,8 @@ class _AllItemsTileState extends State<AllItemsTile> {
                   child: widget.sneaker.imagePath.isNotEmpty
                       ? Transform.rotate(
                           angle: -math.pi / 6.6,
-                          child: Image.file(
-                            File(widget.sneaker.imagePath.first),
+                          child: Image.network(
+                            widget.sneaker.imagePath.first,
                             //  height: contextSize.height / 9.2,
                             //width: screenSize.width / 1,
                             filterQuality: FilterQuality.high,

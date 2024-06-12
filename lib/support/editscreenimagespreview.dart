@@ -21,7 +21,7 @@ class AdminInventoryEditImagePanel extends StatelessWidget {
               if (imagesPaths.isNotEmpty) {
                 return ListView.separated(
                     separatorBuilder: (context, index) => const VerticalDivider(
-                          color: Colors.transparent,
+                          color: Colors.white,
                           thickness: 1,
                         ),
                     scrollDirection: Axis.horizontal,

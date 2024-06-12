@@ -33,8 +33,6 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
       Navigator.pushReplacementNamed(context, '/userdashboard');
     }
 
-    Size screenSize = MediaQuery.of(context).size;
-
     void showCustomSnackBarFail(String message) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -52,7 +50,7 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
 
     // double screenHeight = MediaQuery.of(context).size.height;
     return Consumer<SneakerShopProvider>(builder: (context, provider, child) {
-      void loginUser() async {
+      Future<void> loginUser() async {
         String email = userEmailController.text.trim();
         String password = passwordController.text.trim();
         if (await checkIfEmailExist(email)) {
@@ -63,8 +61,6 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
             });
 
             await provider.loadUser(email: email);
-            Provider.of<SneakerShopProvider>(context, listen: false)
-                .notifyListeners();
             goToUserDashBoard();
           } else {
             showCustomSnackBarFail("Email and and Password do not match");
@@ -120,7 +116,7 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
                     child: Column(
                       children: [
                         MyCustomTextField(
-                            label: 'Email',
+                            label: 'Email (ad@gmail.com)',
                             controller: userEmailController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -142,7 +138,7 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
                                       : Icons.visibility_off,
                                   color: adminGridTileColor,
                                 )),
-                            label: 'Password',
+                            label: 'Password (Anand@123)',
                             controller: passwordController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -150,13 +146,13 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
                               }
                               return null;
                             }),
-                        SizedBox(
-                          height: screenSize.height / 20,
+                        const SizedBox(
+                          height: 50,
                         ),
                         InkWell(
-                          onTap: () {
+                          onTap: () async {
                             if (formKey.currentState!.validate()) {
-                              loginUser();
+                              await loginUser();
                             } else {
                               showCustomSnackBarFail('Invalid data');
                             }
@@ -183,8 +179,8 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: screenSize.height / 40,
+                        const SizedBox(
+                          height: 5,
                         ),
                         Text('Or', style: largeTileNonWhiteTextStyle),
                         InkWell(
@@ -217,7 +213,7 @@ class _ScreenUserLoginState extends State<ScreenUserLogin> {
                           ),
                         ),
                         const SizedBox(
-                          height: 150,
+                          height: 30,
                         ),
                         InkWell(
                             onTap: () {

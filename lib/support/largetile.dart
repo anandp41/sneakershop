@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:sneaker_shop/model/shoemodel.dart';
 import 'package:sneaker_shop/screens/user/details.dart';

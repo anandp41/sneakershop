@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sneaker_shop/db/dbhelper.dart';
 import 'package:sneaker_shop/model/revenuemodel.dart';
 import 'package:sneaker_shop/model/shoemodel.dart';
@@ -74,10 +72,12 @@ class SneakerShopProvider extends ChangeNotifier {
   //   pathsToDeleteFromStoragePermanently.add(path);
   // }
 
-  void deleteImageFromPanel(String path) {
-    tempPreviewPaths.remove(path);
+  Future<void> deleteImageFromPanel(String pathToDelete) async {
+    tempPreviewPaths.remove(pathToDelete);
     notifyListeners();
-    // queuePathForPermanentDeletion(path);
+    if (pathToDelete.startsWith('http')) {
+      await deleteImageFromDb(pathToDelete: pathToDelete);
+    }
   }
 
   void clearTempPreviewPaths() {

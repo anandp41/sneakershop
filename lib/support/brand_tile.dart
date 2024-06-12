@@ -13,7 +13,6 @@ class BrandTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
     return Container(
       decoration: BoxDecoration(
         color: brandTileBackground,

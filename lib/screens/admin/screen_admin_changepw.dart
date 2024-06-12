@@ -65,7 +65,7 @@ class _ScreenAdminSettingsState extends State<ScreenAdminChangePw> {
   }
 
   Future<void> loadAdmin() async {
-    admin = await adminLogin();
+    admin = await returnAdminLogin();
   }
 
   @override

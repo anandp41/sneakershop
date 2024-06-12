@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 class AdminShoeTileImagesPanel extends StatelessWidget {
@@ -21,12 +19,11 @@ class AdminShoeTileImagesPanel extends StatelessWidget {
         itemBuilder: (context, index) {
           return Container(
             width: screenSize.width / 5,
-            padding: const EdgeInsets.all(8),
             color: Colors.white30,
-            child: Image.file(
-              File(imagePaths[index]),
+            child: Image.network(
+              imagePaths[index],
               filterQuality: FilterQuality.high,
-              fit: BoxFit.scaleDown,
+              fit: BoxFit.fitHeight,
             ),
           );
         },

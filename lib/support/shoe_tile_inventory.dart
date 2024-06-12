@@ -102,9 +102,12 @@ class InventoryShoeTile extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Text(
-                shoe.shoeId.toString(),
-                style: largeTileWhiteTextStyle,
+              Expanded(
+                child: Text(
+                  shoe.shoeId.toString(),
+                  overflow: TextOverflow.ellipsis,
+                  style: largeTileWhiteTextStyle,
+                ),
               )
             ],
           ),
@@ -117,9 +120,12 @@ class InventoryShoeTile extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Text(
-                shoe.name,
-                style: largeTileWhiteTextStyle,
+              Expanded(
+                child: Text(
+                  shoe.name,
+                  overflow: TextOverflow.ellipsis,
+                  style: largeTileWhiteTextStyle,
+                ),
               )
             ],
           ),
@@ -132,9 +138,12 @@ class InventoryShoeTile extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Text(
-                shoe.price.toString(),
-                style: largeTileWhiteTextStyle,
+              Expanded(
+                child: Text(
+                  shoe.price.toString(),
+                  overflow: TextOverflow.ellipsis,
+                  style: largeTileWhiteTextStyle,
+                ),
               ),
             ],
           ),
@@ -147,15 +156,32 @@ class InventoryShoeTile extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Text(
-                shoe.brand,
-                style: largeTileWhiteTextStyle,
+              Expanded(
+                child: Text(
+                  shoe.brand,
+                  overflow: TextOverflow.ellipsis,
+                  style: largeTileWhiteTextStyle,
+                ),
               ),
             ],
           ),
-          Text(
-            'Images: ${shoe.imagePath.length}',
-            style: largeTileWhiteTextStyle,
+          Row(
+            children: [
+              Text(
+                'Images:',
+                style: largeTileWhiteTextStyle,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Text(
+                  shoe.imagePath.length.toString(),
+                  overflow: TextOverflow.ellipsis,
+                  style: largeTileWhiteTextStyle,
+                ),
+              ),
+            ],
           ),
           AdminShoeTileImagesPanel(imagePaths: shoe.imagePath),
           Text(

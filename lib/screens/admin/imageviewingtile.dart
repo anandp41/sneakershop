@@ -20,18 +20,24 @@ class AdminImageTile extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: Border.all(width: 2, color: Colors.white38)),
-          child: Image.file(
-            File(path),
-            filterQuality: FilterQuality.high,
-            fit: BoxFit.scaleDown,
-          ),
+          child: path.startsWith('http')
+              ? Image.network(
+                  path,
+                  filterQuality: FilterQuality.high,
+                  fit: BoxFit.scaleDown,
+                )
+              : Image.file(
+                  File(path),
+                  filterQuality: FilterQuality.high,
+                  fit: BoxFit.scaleDown,
+                ),
         ),
         Positioned(
           top: 5,
           left: 5,
           child: InkWell(
             onTap: () async {
-              provider.deleteImageFromPanel(path);
+              await provider.deleteImageFromPanel(path);
             },
             child: Container(
               decoration: const BoxDecoration(
